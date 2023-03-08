@@ -28,6 +28,8 @@ async def process_input(location: str) -> None:
     if location_info:
         lines = await Renderer(location_info).render()
 
+        #click.secho(lines, fg="green")
+
         for line in lines:
             click.secho(line, fg="green")
     else:

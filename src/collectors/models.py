@@ -1,6 +1,7 @@
 """
 Описание моделей данных (DTO).
 """
+from typing import Optional
 
 from pydantic import Field, BaseModel
 
@@ -30,20 +31,6 @@ class LocationDTO(HashableBaseModel):
     alpha2code: str = Field(min_length=2, max_length=2)  # country alpha‑2 code
 
 
-class CurrencyInfoDTO(HashableBaseModel):
-    """
-    Модель данных о валюте.
-
-    .. code-block::
-
-        CurrencyInfoDTO(
-            code="EUR",
-        )
-    """
-
-    code: str
-
-
 class LanguagesInfoDTO(HashableBaseModel):
     """
     Модель данных о языке.
@@ -67,7 +54,10 @@ class CountryDTO(BaseModel):
     .. code-block::
 
         CountryDTO(
+            area = 4343.43
             capital="Mariehamn",
+            latitude=56.76,
+            longitude=6.87,
             alpha2code="AX",
             alt_spellings=[
               "AX",
@@ -75,11 +65,6 @@ class CountryDTO(BaseModel):
               "Aland",
               "Ahvenanmaa"
             ],
-            currencies={
-                CurrencyInfoDTO(
-                    code="EUR",
-                )
-            },
             flag="http://assets.promptapi.com/flags/AX.svg",
             languages={
                 LanguagesInfoDTO(
@@ -96,36 +81,18 @@ class CountryDTO(BaseModel):
         )
     """
 
+    area: Optional[float]
     capital: str
+    latitude: float
+    longitude: float
     alpha2code: str
     alt_spellings: list[str]
-    currencies: set[CurrencyInfoDTO]
     flag: str
     languages: set[LanguagesInfoDTO]
     name: str
     population: int
     subregion: str
     timezones: list[str]
-
-
-class CurrencyRatesDTO(BaseModel):
-    """
-    Модель данных о курсах валют.
-
-    .. code-block::
-
-        CurrencyRatesDTO(
-            base="RUB",
-            date="2022-09-14",
-            rates={
-                "EUR": 0.016503,
-            }
-        )
-    """
-
-    base: str
-    date: str
-    rates: dict[str, float]
 
 
 class WeatherInfoDTO(BaseModel):
@@ -140,6 +107,7 @@ class WeatherInfoDTO(BaseModel):
             humidity=54,
             wind_speed=4.63,
             description="scattered clouds",
+            timezone=5,
         )
     """
 
@@ -148,6 +116,27 @@ class WeatherInfoDTO(BaseModel):
     humidity: int
     wind_speed: float
     description: str
+    timezone: int
+
+
+class NewsDTO(BaseModel):
+    """
+    Модель данных о новости.
+
+    .. code-block::
+
+       NewsDTO(
+            title = "Majority of English councils plan more cuts at same time as maximum tax rises - The Guardian",
+            url="https://news.google.com/rss/articles/CBMib2h0dHBzOi8vd3d3LnRoZWd1YXJkaWFuLmNvbS9zb2NpZXR5LzIwMjMvbWFyLzA3L2VuZ2xpc2gtY291bmNpbHMtY3V0cy1zZXJ2aWNlcy1tYXhpbXVtLXRheC1yaXNlcy1sb2NhbC1maW5hbmNlc9IBb2h0dHBzOi8vYW1wLnRoZWd1YXJkaWFuLmNvbS9zb2NpZXR5LzIwMjMvbWFyLzA3L2VuZ2xpc2gtY291bmNpbHMtY3V0cy1zZXJ2aWNlcy1tYXhpbXVtLXRheC1yaXNlcy1sb2NhbC1maW5hbmNlcw?oc=5",
+            source="Google News",
+            publishedAt = "2023-03-07T06:00:00Z"
+        )
+    """
+
+    title: Optional[str]
+    url: Optional[str]
+    source: Optional[str]
+    publishedAt: Optional[str]
 
 
 class LocationInfoDTO(BaseModel):
@@ -166,11 +155,6 @@ class LocationInfoDTO(BaseModel):
                   "Aland",
                   "Ahvenanmaa"
                 ],
-                currencies={
-                    CurrencyInfoDTO(
-                        code="EUR",
-                    )
-                },
                 flag="http://assets.promptapi.com/flags/AX.svg",
                 languages={
                     LanguagesInfoDTO(
@@ -192,12 +176,9 @@ class LocationInfoDTO(BaseModel):
                 wind_speed=4.63,
                 description="scattered clouds",
             ),
-            currency_rates={
-                "EUR": 0.016503,
-            },
         )
     """
 
     location: CountryDTO
     weather: WeatherInfoDTO
-    currency_rates: dict[str, float]
+    news: Optional[list[NewsDTO]]
