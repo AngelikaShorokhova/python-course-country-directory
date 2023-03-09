@@ -4,8 +4,8 @@
 
 import pytest
 
-from clients.weather import WeatherClient
-from settings import API_KEY_OPENWEATHER
+from clients.weather import NewsClient
+from settings import API_KEY_NEWSAPI
 
 
 @pytest.mark.asyncio
@@ -14,11 +14,11 @@ class TestClientWeather:
     Тестирование клиента для получения информации о погоде.
     """
 
-    base_url = "https://api.openweathermap.org/data/2.5/weather"
+    base_url = "https://newsapi.org/v2"
 
     @pytest.fixture
     def client(self):
-        return WeatherClient()
+        return NewsClient()
 
     async def test_get_base_url(self, client):
         assert await client.get_base_url() == self.base_url
@@ -26,5 +26,5 @@ class TestClientWeather:
     async def test_get_weather(self, mocker, client):
         mocker.patch("clients.base.BaseClient._request")
 
-        await client.get_weather("test")
-        await client._request(f"{self.base_url}?units=metric&q=test&appid={API_KEY_OPENWEATHER}")
+        await client.get_weather("gb")
+        await client._request(f"{self.get_base_url}/top-headlines?country=gb&apiKey={API_KEY_NEWSAPI}")
